@@ -1,0 +1,41 @@
+# Docker
+*.log
+.docker/
+
+# PostgreSQL data
+postgres_data/
+*.sql.backup
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.srv.o
+config.log
+config.status
+aclocal.m4
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# PostgreSQL compiled binaries (keep source, exclude compiled)
+postgresql-8.1.4/src/**/*.o
+postgresql-8.1.4/src/**/*.a
+postgresql-8.1.4/src/**/*.so
+postgresql-8.1.4/src/**/*.srv.o
+postgresql-8.1.4/src/**/*.srv.a
+
