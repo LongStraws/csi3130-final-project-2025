@@ -146,17 +146,14 @@ JOIN departments d ON e.department_id = d.id;
 
 ## Troubleshooting
 
-### Database Initialization Error
+### Database Initialization Error (RESOLVED)
 
 **"FATAL: wrong number of index expressions" during initdb:**
 
-- This is a known compatibility issue with PostgreSQL 8.1.4 on newer systems
-- The database build succeeds, but `initdb` fails during system catalog initialization
-- **Workaround**: The container will show an error message. For hash join development, you can:
-  - Modify code in `postgresql-8.1.4/src/backend/executor/nodeHashjoin.c`
-  - Rebuild using `./rebuild.sh`
-  - The compiled binaries will work even if initdb fails
-- If you need a working database, you may need to use an older base image or patch the PostgreSQL source
+- This was a known compatibility issue with PostgreSQL 8.1.4's bootstrap code on modern systems
+- The error was caused by GCC's aggressive loop optimizations affecting how PostgreSQL 8.1.4 handles index creation during bootstrap
+- **Solution**: The Dockerfile now compiles PostgreSQL with `-fno-aggressive-loop-optimizations` flag, which prevents the compiler optimization that caused the issue
+- The database now initializes successfully and PostgreSQL 8.1.4 is fully functional
 
 ### Build Errors
 
