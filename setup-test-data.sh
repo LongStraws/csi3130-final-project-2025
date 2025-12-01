@@ -95,7 +95,6 @@ EOF
 
 echo ""
 echo "Test data setup complete!"
-echo "You can now test your hash join modifications."
 echo ""
 echo "To connect to the database:"
 echo "  docker exec -it postgresql-dev psql -U postgres -d testdb"
