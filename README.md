@@ -29,9 +29,10 @@ The PostgreSQL source code is mounted as a volume, so you can edit files directl
 
 The main hash join implementation files are:
 
+- `postgresql-8.1.4/src/backend/executor/nodeHash.c`
 - `postgresql-8.1.4/src/backend/executor/nodeHashjoin.c`
-- `postgresql-8.1.4/src/include/executor/nodeHashjoin.h`
-- `postgresql-8.1.4/src/include/executor/hashjoin.h`
+- `postgresql-8.1.4/src/backend/optimizer/plan/createplan.c`
+- `postgresql-8.1.4/src/include/nodes/execnodes.h`
 
 ### Rebuilding After Changes
 
