@@ -771,7 +771,7 @@ typedef struct PlanState
 	 * Other run-time state needed by most if not all node types.
 	 */
 	TupleTableSlot *ps_OuterTupleSlot;	/* slot for current "outer" tuple */
-    TupleTableSlot *ps_InnerTupleSlot; //*CSI3130Project
+    TupleTableSlot *ps_SymInnerTupleSlot; //*CSI3130Project
 	TupleTableSlot *ps_ResultTupleSlot; /* slot for my result tuples */
 	ExprContext *ps_ExprContext;	/* node's expression-evaluation context */
 	ProjectionInfo *ps_ProjInfo;	/* info for doing tuple projection */
@@ -1086,17 +1086,17 @@ typedef struct MergeJoinState
 /* ----------------
  *	 HashJoinState information
  *
- *		hj_HashTable_inner		Inner hash table for the hashjoin
+ *		hj_SymInnerHashTable	Inner hash table for the hashjoin
  *								(NULL if table not built yet) /o
- *		hj_HashTable_outer		Outer hash table for the hashjoin
+ *		hj_SymOuterHashTable	Outer hash table for the hashjoin
  *								(NULL if table not built yet)
  *
- *		hj_CurHashValue_outer	hash value for current outer tuple/o
- *		hj_CurHashValue_inner	hash value for current inner tuple
+ *		hj_SymOuterCurHashValue	hash value for current outer tuple/o
+ *		hj_SymInnerCurHashValue	hash value for current inner tuple
  *
  *
- *		hj_CurBucketNo_outer	regular bucket# for current outer tuple /o
- *		hj_CurBucketNo_inner	regular bucket# for current inner tuple
+ *		hj_SymOuterCurBucketNo	regular bucket# for current outer tuple /o
+ *		hj_SymInnerCurBucketNo	regular bucket# for current inner tuple
  *
  *		hj_CurSkewBucketNo_outer skew bucket# for current outer tuple /o
  *		hj_CurSkewBucketNo_inner skew bucket# for current inner tuple
@@ -1119,7 +1119,7 @@ typedef struct MergeJoinState
  *		hj_HashOperators		the join operators in the hashjoin condition
  *
  *		hj_OuterTupleSlot		tuple slot for outer tuples /o
- *		hj_InnerTupleSlot		tuple slot for inner tuples
+ *		hj_SymInnerTupleSlot	tuple slot for inner tuples
  *
  *		hj_HashTupleSlot		tuple slot for hashed tuples
  *
@@ -1127,18 +1127,18 @@ typedef struct MergeJoinState
  *		hj_FirstOuterTupleSlot	first tuple retrieved from outer plan
  *
  *		hj_NeedNewOuter			true if need new outer tuple on next call
- *      hj_NeedNewInner			true if need new inner tuple on next call
+ *      hj_SymNeedNewInner		true if need new inner tuple on next call
  *
  *		hj_MatchedOuter			true if found a join match for current outer
  *		hj_Matchedinner			true if found a join match for current inner
  *
  *		hj_OuterNotEmpty		true if outer relation known not empty (true if outer is not empty)
- *		hj_innerNotEmpty		true if inner relation known not empty
+ *		hj_SymInnerNotEmpty		true if inner relation known not empty
  *
- *		hj_fetchingFromInner 	true if we fetched tuple from inner relation
+ *		hj_SymFetchingFromInner	true if we fetched tuple from inner relation
  *
- *		hj_foundByProbingInner  number of tuples found by probing inner relation
- * 		hj_foundByProbingOuter
+ *		hj_SymFoundByProbingInner  number of tuples found by probing inner relation
+ * 		hj_SymFoundByProbingOuter
  * ----------------
  */
 
@@ -1151,49 +1151,49 @@ typedef struct HashJoinState//CSI3130
 	JoinState	js;				/* its first field is NodeTag */
 	List	   *hashclauses;	/* list of ExprState nodes */
 	
-    HashJoinTable hj_InnerHashTable; //CSI3130
-    HashJoinTable hj_OuterHashTable; //CSI3130
+    HashJoinTable hj_SymInnerHashTable; //CSI3130
+    HashJoinTable hj_SymOuterHashTable; //CSI3130
 	
-    uint32		hj_InnerCurHashValue; //CSI3130
-    uint32		hj_OuterCurHashValue; //CSI3130
+    uint32		hj_SymInnerCurHashValue; //CSI3130
+    uint32		hj_SymOuterCurHashValue; //CSI3130
 	
-    int			hj_InnerCurBucketNo; //CSI3130
-    int			hj_OuterCurBucketNo; //CSI3130
+    int			hj_SymInnerCurBucketNo; //CSI3130
+    int			hj_SymOuterCurBucketNo; //CSI3130
 	
-    HashJoinTuple hj_InnerCurTuple; //CSI3130
-    HashJoinTuple hj_OuterCurTuple; //CSI3130
+    HashJoinTuple hj_SymInnerCurTuple; //CSI3130
+    HashJoinTuple hj_SymOuterCurTuple; //CSI3130
 	
 	List	   *hj_InnerHashKeys;		/* list of ExprState nodes */
     List	   *hj_OuterHashKeys;		/* list of ExprState nodes */
 	
     List	   *hj_HashOperators;		/* list of operator OIDs */
 	
-    TupleTableSlot *hj_InnerTupleSlot; //CSI3130
+    TupleTableSlot *hj_SymInnerTupleSlot; //CSI3130
     TupleTableSlot *hj_OuterTupleSlot;
 	
-	TupleTableSlot *hj_InnerHashTupleSlot; //CSI3130
-    TupleTableSlot *hj_OuterHashTupleSlot; //CSI3130
+	TupleTableSlot *hj_SymInnerHashTupleSlot; //CSI3130
+    TupleTableSlot *hj_SymOuterHashTupleSlot; //CSI3130
 	
     TupleTableSlot *hj_NullInnerTupleSlot;
 	
-    TupleTableSlot *hj_FirstInnerTupleSlot; //CSI3130
+    TupleTableSlot *hj_SymFirstInnerTupleSlot; //CSI3130
     TupleTableSlot *hj_FirstOuterTupleSlot;
     
-    bool        hj_innerExhausted; //CSI3130
-    bool        hj_outerExhausted; //CSI3130
+    bool        hj_SymInnerExhausted; //CSI3130
+    bool        hj_SymOuterExhausted; //CSI3130
     
-    bool        hj_NeedNewInner; //CSI3130
+    bool        hj_SymNeedNewInner; //CSI3130
     bool        hj_NeedNewOuter;
     
     bool        hj_MatchedOuter;
     
-    bool        hj_InnerNotEmpty; //CSI3130
+    bool        hj_SymInnerNotEmpty; //CSI3130
     bool        hj_OuterNotEmpty;
 
-    bool        hj_fetchingFromInner; //CSI3130 true if we fetched tuple from inner relation
+    bool        hj_SymFetchingFromInner; //CSI3130 true if we fetched tuple from inner relation
     
-    int         hj_foundByProbingInner; //CSI3130 number of tuples found by probing inner relation
-    int         hj_foundByProbingOuter; //CSI3130 number of tuples found by probing outer relation
+    int         hj_SymFoundByProbingInner; //CSI3130 number of tuples found by probing inner relation
+    int         hj_SymFoundByProbingOuter; //CSI3130 number of tuples found by probing outer relation
 } HashJoinState;
 
 
